@@ -3,12 +3,13 @@ import java.awt.Color;
 public class Building {
     private String name;
     private Color color;
-    private int remaining;
+    private BuildingType type;
 
-    public Building(String name, Color color, int remaining) {
+    public Building(String name, Color color, BuildingType type) {
         this.name = name;
         this.color = color;
-        this.remaining = remaining;
+        this.type = type;
+
     }
 
     public String getName() {
@@ -26,11 +27,11 @@ public class Building {
         this.color = color;
     }
 
-    public int getRemaining() {
-        return remaining;
+    public BuildingType getType() {
+        return type;
     }
 
-    public void setRemaining(int remaining) {
-        this.remaining = remaining;
+    public void setType(BuildingType type) {
+        this.type = type;
     }
 }

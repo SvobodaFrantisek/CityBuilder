@@ -31,17 +31,21 @@ public class Game {
         }
         return false;
     }
-    public boolean destroyBuilding(int x, int y, Building building) {
+    public boolean destroyBuilding(int x, int y) {
         if (x >= 0 && y >= 0 && y < grid.length && x < grid.length) {
             Tile tile = grid[y][x];
-            if (tile.isEmpty()) {
-                return false;
+            if (!tile.isEmpty()) {
+                Building b = grid[y][x].getBuilding();
+                if(b != null) {
+                    population -= b.getType().getPopulationBoost();
+                }
+                tile.destroyBuilding();
+                return true;
             }
-            tile.destroyBuilding(building);
-
         }
-        return true;
+        return false;
     }
+
 
     public void setGrid(Tile[][] grid) {
         this.grid = grid;
@@ -56,12 +60,16 @@ public class Game {
     }
 
     public int getPopulation() {
-        return getHosuses() * 4;
+        return population;
     }
 
     public void setPopulation(int population) {
         this.population = population;
     }
+    public void addPopulation(int population) {
+        this.population += population;
+    }
+
 
     public int getHosuses() {
         return hosuses;

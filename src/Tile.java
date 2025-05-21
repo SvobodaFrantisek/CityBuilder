@@ -16,12 +16,16 @@ public class Tile {
     public void placeBuilding(Building b) {
         this.building = b;
     }
-    public void destroyBuilding(Building b) {
+    public void destroyBuilding() {
         this.building = null;
     }
 
     public Building getBuilding() {
         return building;
+    }
+
+    public void setBuilding(Building building) {
+        this.building = building;
     }
 }
 

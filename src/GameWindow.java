@@ -7,8 +7,10 @@ public class GameWindow {
         frame.setTitle("City Builder");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 800);
-        GamePanel panel = new GamePanel();
+        Game game = new Game();
+        GamePanel panel = new GamePanel(game);
         frame.add(panel);
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 

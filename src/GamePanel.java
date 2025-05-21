@@ -1,63 +1,100 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
 
 public class GamePanel extends JPanel {
 
-    private Game game;
-    private final int tileSize = 50;
-    private Building building = null;
-    private BuildingType selectedType = null;
 
-    public GamePanel() {
-        this.game = new Game();
+    private final int tileSize = 50;
+    private BuildingType selectedType = null;
+    private boolean destroyMode = false;
+    private boolean enabledButtons = true;
+
+    private JLabel population;
+    private JButton buttonHouse;
+    private JButton buttonFactory;
+    private JButton buttonDestroy;
+    private JButton buttonShop;
+    ArrayList<JButton>buttons = new ArrayList<>();
+    private BuildingType factory = new BuildingType("Factory", Color.blue, 1, 0);
+    private BuildingType house = new BuildingType("House", Color.red, 3, 4);
+
+    Game game;
+    public GamePanel(Game game) {
+        this.game = game;
+
         setLayout(new BorderLayout());
+
+
+        JPanel textPanel = new JPanel();
+        population = new JLabel("Population " + game.getPopulation());
+        add(textPanel, BorderLayout.EAST);
+
         JPanel buttonPanel = new JPanel();
-        JButton buttonHouse = new JButton("House");
+        buttonHouse = new JButton("House (" + house.getRemaining() + ")");
+        buttonFactory = new JButton("Factory (" + factory.getRemaining() + ")");
+        buttonDestroy = new JButton("Destroy");
+        buttonShop = new JButton("Shop");
+
+        buttons.add(buttonHouse);
+        buttons.add(buttonFactory);
+        buttons.add(buttonDestroy);
+        buttons.add(buttonShop);
+
+
+
+
+
         buttonHouse.setActionCommand("house");
         buttonPanel.add(buttonHouse);
 
-        JButton buttonFactory = new JButton("Factory");
         buttonFactory.setActionCommand("factory");
         buttonPanel.add(buttonFactory);
 
-        JButton buttonDestroy = new JButton("Destroy");
+
         buttonDestroy.setActionCommand("destroy");
         buttonPanel.add(buttonDestroy);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        JButton buttonFarm = new JButton("Farm");
-        buttonFarm.setActionCommand("farm");
-        buttonPanel.add(buttonFarm);
+        buttonShop.setActionCommand("shop");
+        buttonPanel.add(buttonShop);
         add(buttonPanel, BorderLayout.SOUTH);
 
 
         add(buttonPanel, BorderLayout.SOUTH);
 
-        JPanel textPanel = new JPanel();
-        JLabel population = new JLabel("Population: " + game.getPopulation() );
-        add(textPanel, BorderLayout.EAST);
-
+        updateValues();
         ActionListener listener = e -> {
             String cmd = e.getActionCommand();
             switch (cmd) {
                 case "house":
-                    BuildingType house = new BuildingType("House", Color.red,3,4);
+                    selectedType = house;
+                    destroyMode = false;
                     break;
-                    case "factory":
-                        BuildingType factory = new BuildingType("Factory", Color.blue,1,0);
+                case "factory":
+                    selectedType = factory;
+                    destroyMode = false;
+                    break;
+                case "destroy":
+                    selectedType = null;
+                    destroyMode = true;
+                    break;
+                    case "shop":
+                        enabledButtons = false;
+                        turnOnOffButtons();
+                        new ShopWindow(game, this);
                         break;
-
             }
         };
-        
 
         buttonHouse.addActionListener(listener);
         buttonFactory.addActionListener(listener);
+        buttonDestroy.addActionListener(listener);
+        buttonShop.addActionListener(listener);
 
 
 
@@ -67,35 +104,49 @@ public class GamePanel extends JPanel {
                 int x = e.getX() / tileSize;
                 int y = e.getY() / tileSize;
 
-                try {
-                    if (building.getRemaining() <= 0) {
-                        System.out.println("error");
-                    } else {
-                        if (game.placeBuilding(x, y, new Building())) {
-                            if (building.getName().equals("House")) {
-                                game.setHosuses(game.getHosuses() + 1);
-                            }
-
-                            building.setRemaining(building.getRemaining() - 1);
-                            population.setText("Population: " + game.getPopulation());
-                        } else {
-                            System.out.println("error");
-                        }
+                if (destroyMode) {
+                    if(game.destroyBuilding(x, y)) {
+                        updateValues();
+                        repaint();
                     }
-                }catch (Exception exception){
-                    System.out.println("error");
                 }
 
-
-
-
-                repaint();
+                if (selectedType != null && selectedType.getRemaining() > 0) {
+                    Building b = new Building(selectedType.getName(), selectedType.getColor(), selectedType);
+                    if (game.placeBuilding(x, y, b)) {
+                        selectedType.decreaseRemaining();
+                        game.addPopulation(selectedType.getPopulationBoost());
+                        updateValues();
+                        repaint();
+                    }
+                }
             }
         });
         textPanel.add(population);
     }
+    public void updateValues(){
+        population.setText("Population: " + game.getPopulation());
+        buttonHouse.setText("House (" + house.getRemaining() + ")");
+        buttonFactory.setText("Factory (" + factory.getRemaining() + ")");
+    }
+    public void turnOnOffButtons(){
+        for (int i = 0; i < buttons.size(); i++) {
+            if (!enabledButtons) {
+                buttons.get(i).setEnabled(false);
+            } else {
+                buttons.get(i).setEnabled(true);
+            }
+        }
 
+    }
 
+    public boolean isEnabledButtons() {
+        return enabledButtons;
+    }
+
+    public void setEnabledButtons(boolean enabledButtons) {
+        this.enabledButtons = enabledButtons;
+    }
 
     @Override
     protected void paintComponent(Graphics g) {

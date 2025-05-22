@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Game {
     private Tile[][] grid;
     private int gridSize = 10;
@@ -5,8 +7,13 @@ public class Game {
     private int hosuses = 0;
     private int factories = 0;
     private int food = 0;
+    private int water = 0;
     private int iron = 0;
     private int stone = 0;
+    private int money = 0;
+    private int wood = 0;
+    private ArrayList<BuildingType> types = new ArrayList<>();
+
 
     public Game() {
         grid = new Tile[gridSize][gridSize];
@@ -44,6 +51,20 @@ public class Game {
             }
         }
         return false;
+    }
+    public boolean canBuy(BuildingType building) {
+        if (wood >= building.getCostWood() && stone >= building.getCostStone() && money >= building.getCostMoney() && iron >= building.getCostIron()) {
+            return true;
+        }else {
+            return false;
+        }
+    }
+    public void buy(BuildingType building) {
+
+        wood -= building.getCostWood();
+        stone -= building.getCostStone();
+        money -= building.getCostMoney();
+        iron -= building.getCostIron();
     }
 
 
@@ -86,5 +107,6 @@ public class Game {
     public void setFactories(int factories) {
         this.factories = factories;
     }
+
 }
 

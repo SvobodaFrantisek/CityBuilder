@@ -20,8 +20,8 @@ public class GamePanel extends JPanel {
     private JButton buttonDestroy;
     private JButton buttonShop;
     ArrayList<JButton>buttons = new ArrayList<>();
-    private BuildingType factory = new BuildingType("Factory", Color.blue, 1, 0);
-    private BuildingType house = new BuildingType("House", Color.red, 3, 4);
+    private BuildingType factory = new BuildingType("Factory", Color.blue, 1, 0,0,0,0,0);
+    private BuildingType house = new BuildingType("House", Color.red, 3, 4,0,0,0,0);
 
     Game game;
     public GamePanel(Game game) {
@@ -169,5 +169,13 @@ public class GamePanel extends JPanel {
                 }
             }
         }
+    }
+
+    public BuildingType getFactory() {
+        return factory;
+    }
+
+    public BuildingType getHouse() {
+        return house;
     }
 }

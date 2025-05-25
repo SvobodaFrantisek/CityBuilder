@@ -1,5 +1,5 @@
+package Game;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,12 +24,12 @@ public class ShopWindow extends JDialog {
         });
         panel.setLayout(new BorderLayout());
         shopPanel.setLayout(new GridLayout(2,3,10,10));
-        shopPanel.add(ItemPanel(new BuildingType("House", Color.red, 3, 4,0,0,0,0),game,gamePanel));
-        shopPanel.add(ItemPanel(new BuildingType("Factory", Color.blue, 1, 0,0,0,0,0),game,gamePanel));
-        shopPanel.add(ItemPanel(new BuildingType("House", Color.red, 3, 4,0,0,0,0),game,gamePanel));
-        shopPanel.add(ItemPanel(new BuildingType("House", Color.red, 3, 4,0,0,0,0),game,gamePanel));
-        shopPanel.add(ItemPanel(new BuildingType("House", Color.red, 3, 4,0,0,0,0),game,gamePanel));
-        shopPanel.add(ItemPanel(new BuildingType("House", Color.red, 3, 4,0,0,0,0),game,gamePanel));
+        shopPanel.add(ItemPanel(new BuildingType("House", Color.red, 0, 4,0,0,5,0),game,gamePanel));
+        shopPanel.add(ItemPanel(new BuildingType("Factory", Color.blue, 0, 0,0,0,0,0),game,gamePanel));
+        shopPanel.add(ItemPanel(new BuildingType("House", Color.red, 0, 4,0,0,0,0),game,gamePanel));
+        shopPanel.add(ItemPanel(new BuildingType("House", Color.red, 0, 4,0,0,0,0),game,gamePanel));
+        shopPanel.add(ItemPanel(new BuildingType("House", Color.red, 0, 4,0,0,0,0),game,gamePanel));
+        shopPanel.add(ItemPanel(new BuildingType("House", Color.red, 0, 4,0,0,0,0),game,gamePanel));
 
         JLabel titleLabel = new JLabel("Shop");
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -73,6 +73,8 @@ public class ShopWindow extends JDialog {
                             break;
                     }
                     gamePanel.updateValues();
+                }else{
+                     new PopupWindow("not enough resources");
                 }
             }
         });

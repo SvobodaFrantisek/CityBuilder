@@ -1,4 +1,6 @@
+package Game;
 import java.awt.Color;
+
 
 public class Building {
     private String name;

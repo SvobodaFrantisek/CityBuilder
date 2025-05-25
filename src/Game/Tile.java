@@ -1,3 +1,5 @@
+package Game;
+
 public class Tile {
     private int x;
     private int y;

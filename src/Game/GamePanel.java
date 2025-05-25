@@ -1,3 +1,4 @@
+package Game;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -14,40 +15,35 @@ public class GamePanel extends JPanel {
     private boolean destroyMode = false;
     private boolean enabledButtons = true;
 
-    private JLabel population;
+
+    private TextPanel textPanel;
     private JButton buttonHouse;
     private JButton buttonFactory;
     private JButton buttonDestroy;
     private JButton buttonShop;
-    ArrayList<JButton>buttons = new ArrayList<>();
-    private BuildingType factory = new BuildingType("Factory", Color.blue, 1, 0,0,0,0,0);
-    private BuildingType house = new BuildingType("House", Color.red, 3, 4,0,0,0,0);
+    ArrayList<JButton> buttons = new ArrayList<>();
+    private BuildingType factory = new BuildingType("Factory", Color.blue, 1, 0, 0, 0, 0, 0);
+    private BuildingType house = new BuildingType("House", Color.red, 3, 4, 0, 0, 0, 0);
 
     Game game;
+
     public GamePanel(Game game) {
         this.game = game;
-
         setLayout(new BorderLayout());
-
-
-        JPanel textPanel = new JPanel();
-        population = new JLabel("Population " + game.getPopulation());
-        add(textPanel, BorderLayout.EAST);
-
         JPanel buttonPanel = new JPanel();
         buttonHouse = new JButton("House (" + house.getRemaining() + ")");
         buttonFactory = new JButton("Factory (" + factory.getRemaining() + ")");
         buttonDestroy = new JButton("Destroy");
         buttonShop = new JButton("Shop");
 
+
+        textPanel = new TextPanel(game);
+        add(textPanel, BorderLayout.EAST);
+
         buttons.add(buttonHouse);
         buttons.add(buttonFactory);
         buttons.add(buttonDestroy);
         buttons.add(buttonShop);
-
-
-
-
 
         buttonHouse.setActionCommand("house");
         buttonPanel.add(buttonHouse);
@@ -83,11 +79,11 @@ public class GamePanel extends JPanel {
                     selectedType = null;
                     destroyMode = true;
                     break;
-                    case "shop":
-                        enabledButtons = false;
-                        turnOnOffButtons();
-                        new ShopWindow(game, this);
-                        break;
+                case "shop":
+                    enabledButtons = false;
+                    turnOnOffButtons();
+                    new ShopWindow(game, this);
+                    break;
             }
         };
 
@@ -97,7 +93,6 @@ public class GamePanel extends JPanel {
         buttonShop.addActionListener(listener);
 
 
-
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -105,7 +100,7 @@ public class GamePanel extends JPanel {
                 int y = e.getY() / tileSize;
 
                 if (destroyMode) {
-                    if(game.destroyBuilding(x, y)) {
+                    if (game.destroyBuilding(x, y)) {
                         updateValues();
                         repaint();
                     }
@@ -122,14 +117,22 @@ public class GamePanel extends JPanel {
                 }
             }
         });
-        textPanel.add(population);
+
+        Timer time = new Timer(1000, e -> {
+            game.generateResources();
+            updateValues();
+            game.startEvent();
+        });
+        time.start();
     }
-    public void updateValues(){
-        population.setText("Population: " + game.getPopulation());
+
+    public void updateValues() {
+        textPanel.updateVal();
         buttonHouse.setText("House (" + house.getRemaining() + ")");
         buttonFactory.setText("Factory (" + factory.getRemaining() + ")");
     }
-    public void turnOnOffButtons(){
+
+    public void turnOnOffButtons() {
         for (int i = 0; i < buttons.size(); i++) {
             if (!enabledButtons) {
                 buttons.get(i).setEnabled(false);
@@ -152,15 +155,17 @@ public class GamePanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Tile[][] grid = game.getGrid();
+        int rows = grid.length;
+        int cols = grid[0].length;
 
-        for (int row = 0; row < grid.length; row++) {
-            for (int col = 0; col < grid[row].length; col++) {
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
                 int x = col * tileSize;
                 int y = row * tileSize;
 
 
                 g.setColor(Color.black);
-                g.drawRect(x-1, y-1, tileSize, tileSize);
+                g.drawRect(x - 1, y - 1, tileSize, tileSize);
 
                 Building b = grid[row][col].getBuilding();
                 if (b != null) {

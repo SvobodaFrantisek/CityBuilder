@@ -3,7 +3,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import Events.RandomEvent;
+import Events.ToxicWaterEvent;
 import Events.TreasureEvent;
+import Events.ZombieApocalypse;
 
 public class Game {
     private Tile[][] grid;
@@ -104,9 +106,11 @@ public class Game {
         water = Math.max(water, 0);
         population = Math.max(population, 0);
 
-        if (food <= 0 || water <= 0) {
+       /* if (food <= 0 || water <= 0) {
             population = Math.max(0, population - 1);
         }
+
+        */
     }
 
     public int countBuildingsByName(String name) {
@@ -123,8 +127,10 @@ public class Game {
     }
     public void startEvent() {
         allEvents.add(new TreasureEvent());
+        allEvents.add(new ZombieApocalypse());
+        allEvents.add(new ToxicWaterEvent());
 
-        if (r.nextInt(100) < 5) {  // 5 ze 100 = 5 % šance
+        if (r.nextInt(100) < 4) {
             RandomEvent event = allEvents.get(r.nextInt(allEvents.size()));
             if (event.isPermanent()){
                 activeEvents.add(event);
@@ -227,6 +233,10 @@ public class Game {
 
     public void setWood(int wood) {
         this.wood = wood;
+    }
+
+    public void setActiveEvents(ArrayList<RandomEvent> activeEvents) {
+        this.activeEvents = activeEvents;
     }
 }
 

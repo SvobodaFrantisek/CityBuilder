@@ -21,6 +21,7 @@ public class GamePanel extends JPanel {
     private JButton buttonFactory;
     private JButton buttonDestroy;
     private JButton buttonShop;
+    private JButton buttonRemoveEvent;
     ArrayList<JButton> buttons = new ArrayList<>();
     private BuildingType factory = new BuildingType("Factory", Color.blue, 1, 0, 0, 0, 0, 0);
     private BuildingType house = new BuildingType("House", Color.red, 3, 4, 0, 0, 0, 0);
@@ -35,6 +36,8 @@ public class GamePanel extends JPanel {
         buttonFactory = new JButton("Factory (" + factory.getRemaining() + ")");
         buttonDestroy = new JButton("Destroy");
         buttonShop = new JButton("Shop");
+        buttonRemoveEvent = new JButton("Remove Event");
+
 
 
         textPanel = new TextPanel(game);
@@ -44,6 +47,7 @@ public class GamePanel extends JPanel {
         buttons.add(buttonFactory);
         buttons.add(buttonDestroy);
         buttons.add(buttonShop);
+        buttons.add(buttonRemoveEvent);
 
         buttonHouse.setActionCommand("house");
         buttonPanel.add(buttonHouse);
@@ -56,12 +60,15 @@ public class GamePanel extends JPanel {
         buttonPanel.add(buttonDestroy);
         add(buttonPanel, BorderLayout.SOUTH);
 
+
         buttonShop.setActionCommand("shop");
         buttonPanel.add(buttonShop);
-        add(buttonPanel, BorderLayout.SOUTH);
 
 
+        buttonRemoveEvent.setActionCommand("removeEvent");
+        buttonPanel.add(buttonRemoveEvent);
         add(buttonPanel, BorderLayout.SOUTH);
+
 
         updateValues();
         ActionListener listener = e -> {
@@ -84,6 +91,9 @@ public class GamePanel extends JPanel {
                     turnOnOffButtons();
                     new ShopWindow(game, this);
                     break;
+                    case "removeEvent":
+                        new RemoveEventShop(game);
+                        break;
             }
         };
 
@@ -91,6 +101,7 @@ public class GamePanel extends JPanel {
         buttonFactory.addActionListener(listener);
         buttonDestroy.addActionListener(listener);
         buttonShop.addActionListener(listener);
+        buttonRemoveEvent.addActionListener(listener);
 
 
         addMouseListener(new MouseAdapter() {
@@ -122,6 +133,11 @@ public class GamePanel extends JPanel {
             game.generateResources();
             updateValues();
             game.startEvent();
+            for (int i = 0; i < game.getActiveEvents().size() ; i++) {
+                if (i % 2 == 0){
+                    game.getActiveEvents().get(i).aply(game);
+                }
+            }
         });
         time.start();
     }

@@ -22,7 +22,6 @@ public class TreasureEvent implements RandomEvent {
 
     }
 
-    public boolean isPersistent() { return false; }
 
 
 }

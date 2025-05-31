@@ -1,0 +1,40 @@
+TUTORIAL – How to Play
+
+Buildings:
+House increases population.
+Farm produces food.
+Water Pump produces water.
+Lumber Mill produces wood.
+Mine produces stone and iron.
+Factory produces money.
+
+Resources:
+Food, Water, Wood, Stone, Iron, Money, Population
+
+Mechanics:
+Each House consumes 2 food and 2 water per second.
+If food or water reaches zero, population decreases.
+If population reaches zero, the game ends.
+Maximum value for each resource is 1000.
+
+Indicators:
+Black text means the resource is safe.
+Orange text means the resource is getting low.
+Red text means the resource is critical.
+A dead face icon means game over.
+
+Random Events:
+Treasure gives money.
+Earthquake destroys buildings.
+Toxic Water slows water production.
+Famine reduces food.
+Zombie Apocalypse reduces population.
+
+Shops:
+Shop is used to buy buildings.
+Remove Event Shop is used to fix negative effects.
+
+Controls:
+Select a building and click on a tile to place it.
+Use destroy mode to remove buildings.
+Open the shop using the shop button.

@@ -7,7 +7,9 @@ import Game.Tile;
 
 import java.util.ArrayList;
 import java.util.Random;
-
+/**
+ * Represents a random earthquake event that destroys a few buildings.
+ */
 public class EarthquakeEvent implements RandomEvent {
 
     @Override
@@ -19,11 +21,19 @@ public class EarthquakeEvent implements RandomEvent {
     public boolean isPermanent() {
         return false;
     }
-
+    /**
+     * https://chatgpt.com fixed my mistakes but it is nothing i would not have written myself. I did it to safe time.
+     *
+     * Applies the earthquake effect: destroys up to 3 random buildings and reduces population accordingly.
+     *
+     * @param game the game instance to apply changes to
+     *
+     */
     @Override
     public void aply(Game game) {
         ArrayList<Tile> buildings = new ArrayList<>();
         Tile[][] grid = game.getGrid();
+
 
 
         for (int row = 0; row < grid.length; row++) {
@@ -36,7 +46,7 @@ public class EarthquakeEvent implements RandomEvent {
         }
 
         if (buildings.isEmpty()) {
-            new PopupWindow("There is nothing to destroy");
+            new PopupWindow("earthquake happened but there is nothing to destroy");
             return;
         }
 
@@ -51,7 +61,9 @@ public class EarthquakeEvent implements RandomEvent {
             Tile tile = buildings.get(index);
 
             Building b = tile.getBuilding();
-
+            if (b != null) {
+                game.setPopulation(game.getPopulation() - b.getType().getPopulationBoost() / 2);
+            }
 
             tile.destroyBuilding();
             buildings.remove(index);

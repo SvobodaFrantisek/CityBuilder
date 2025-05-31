@@ -2,7 +2,12 @@ package Events;
 
 import Game.Game;
 import Game.PopupWindow;
-
+/**
+ * Represents a toxic water event that negatively affects water production.
+ * This is a permanent event unless removed.
+ *
+ *
+ */
 public class ToxicWaterEvent implements RandomEvent {
     private boolean applied = false;
 
@@ -15,14 +20,16 @@ public class ToxicWaterEvent implements RandomEvent {
     public boolean isPermanent() {
         return true;
     }
-
+    /**
+     * Applies the effects of the toxic water event by reducing the water amount.
+     */
     @Override
     public void aply(Game game) {
         if (!applied) {
             new PopupWindow("Toxic water slowed production of water");
             applied = true;
         }
-        game.setWater(game.getWater()-1);
+        game.setWater(game.getWater() - 1);
     }
 
     @Override

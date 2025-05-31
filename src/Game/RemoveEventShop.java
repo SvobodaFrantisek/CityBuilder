@@ -7,10 +7,18 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-
+/**
+ * Shop for removing ongoing permanent random events from the game.
+ */
 public class RemoveEventShop extends JFrame {
     private Game game;
-
+    /**
+     * visual side of this code assisted by https://chatgpt.com
+     *
+     * Constructs the shop listing removable events with their cost.
+     *
+     * @param game reference to the current game
+     */
     public RemoveEventShop(Game game) {
         this.game = game;
         setTitle("Remove Buff");
@@ -72,7 +80,12 @@ public class RemoveEventShop extends JFrame {
         add(panel);
         setVisible(true);
     }
-
+    /**
+     * Gets the repair/removal cost for a given event name.
+     *
+     * @param eventName name of the event
+     * @return cost in in-game currency
+     */
     private int getRepairCost(String eventName) {
         if (eventName.equals("ZombieApocalypse")) {
             return 50;
@@ -83,6 +96,6 @@ public class RemoveEventShop extends JFrame {
         if (eventName.equals("Famine")) {
             return 80;
         }
-        return 100;
+        return 69;
     }
 }

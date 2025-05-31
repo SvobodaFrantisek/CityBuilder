@@ -1,8 +1,12 @@
 package Game;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-
+/**
+ * Panel displaying game statistics like population and resources.
+ * Also shows visual indicator of population happiness.
+ */
 public class TextPanel extends JPanel {
     private Game game;
     private JLabel population;
@@ -14,9 +18,16 @@ public class TextPanel extends JPanel {
     private JLabel water;
 
     private JLabel picture;
-    private ImageIcon happy = new ImageIcon("src/images/happy2.png");
-    private ImageIcon sad = new ImageIcon("src/images/happy.png");
+    private ImageIcon happy = new ImageIcon("src/images/happy.png");
+    private ImageIcon sad = new ImageIcon("src/images/sad.png");
+    private ImageIcon neutral = new ImageIcon("src/images/neutreal.png");
+    private ImageIcon dead = new ImageIcon("src/images/dead.png");
 
+    /**
+     * Initializes the text panel with current game stats and layout.
+     *
+     * @param game reference to the current game
+     */
     public TextPanel(Game game) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(new Color(240, 255, 240));
@@ -49,13 +60,9 @@ public class TextPanel extends JPanel {
         water.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 
-
         picture = new JLabel();
         picture.setIcon(happy);
         picture.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-
-
 
 
         add(population);
@@ -70,7 +77,10 @@ public class TextPanel extends JPanel {
 
         updateVal();
     }
-    public void updateVal(){
+    /**
+     * Updates the displayed values and icons based on game state.
+     */
+    public void updateVal() {
         population.setText("Population: " + game.getPopulation());
         money.setText("Money: " + game.getMoney());
         wood.setText("Wood: " + game.getWood());
@@ -78,19 +88,33 @@ public class TextPanel extends JPanel {
         iron.setText("Iron: " + game.getIron());
         food.setText("Food: " + game.getFood());
         water.setText("Water: " + game.getWater());
-        if (game.getFood() <= 5){
+        if (game.getFood() <= 5) {
             food.setForeground(Color.RED);
-            picture.setIcon(happy);
-        }else {
+        } else if (game.getFood() <= 15) {
+            food.setForeground(Color.ORANGE);
+        } else {
             food.setForeground(Color.BLACK);
-            picture.setIcon(sad);
         }
+
         if (game.getWater() <= 5) {
-            picture.setIcon(happy);
             water.setForeground(Color.RED);
-        }else {
+        } else if (game.getWater() <= 15) {
+            water.setForeground(Color.ORANGE);
+        } else {
             water.setForeground(Color.BLACK);
+        }
+
+        if (game.getPopulation() == 0) {
+            picture.setIcon(dead);
+        } else if (game.getFood() <= 5 || game.getWater() <= 5) {
             picture.setIcon(sad);
+        } else if (game.getFood() <= 15 || game.getWater() <= 15) {
+            picture.setIcon(neutral);
+        } else {
+            picture.setIcon(happy);
         }
     }
 }
+
+
+

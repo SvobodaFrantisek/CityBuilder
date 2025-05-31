@@ -1,10 +1,19 @@
 package Game;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+/**
+ * A modal dialog window for purchasing additional buildings.
+ */
 public class ShopWindow extends JDialog {
+    /**
+     * Constructs the shop interface for buying building types.
+     *
+     * @param game reference to the game for resource checking and purchasing
+     * @param gamePanel reference to the game panel to update building counts
+     */
     public ShopWindow(Game game, GamePanel gamePanel) {
         super((Frame) null, "Shop", true);
 
@@ -17,18 +26,17 @@ public class ShopWindow extends JDialog {
         JPanel shopPanel = new JPanel();
         exitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                gamePanel.setEnabledButtons(true);
                 dispose();
             }
         });
         panel.setLayout(new BorderLayout());
-        shopPanel.setLayout(new GridLayout(2,3,10,10));
-        shopPanel.add(ItemPanel(new BuildingType("House", Color.red, 0, 4,0,0,5,0),game,gamePanel));
-        shopPanel.add(ItemPanel(new BuildingType("Factory", Color.blue, 0, 0,0,0,0,0),game,gamePanel));
-        shopPanel.add(ItemPanel(new BuildingType("House", Color.red, 0, 4,0,0,0,0),game,gamePanel));
-        shopPanel.add(ItemPanel(new BuildingType("House", Color.red, 0, 4,0,0,0,0),game,gamePanel));
-        shopPanel.add(ItemPanel(new BuildingType("House", Color.red, 0, 4,0,0,0,0),game,gamePanel));
-        shopPanel.add(ItemPanel(new BuildingType("House", Color.red, 0, 4,0,0,0,0),game,gamePanel));
+        shopPanel.setLayout(new GridLayout(2, 3, 10, 10));
+        shopPanel.add(ItemPanel(new BuildingType("House", Color.red, 0, 4, 2, 5, 20, 5), game, gamePanel));
+        shopPanel.add(ItemPanel(new BuildingType("Factory", Color.white, 0, 0, 15, 10, 10, 5), game, gamePanel));
+        shopPanel.add(ItemPanel(new BuildingType("Farm", Color.yellow, 0, 0, 2, 5, 10, 10), game, gamePanel));
+        shopPanel.add(ItemPanel(new BuildingType("WaterPump", Color.blue, 0, 0, 10, 10, 5, 5), game, gamePanel));
+        shopPanel.add(ItemPanel(new BuildingType("Mine", Color.gray, 0, 0, 10, 20, 15, 15), game, gamePanel));
+        shopPanel.add(ItemPanel(new BuildingType("LumberMill", Color.green, 0, 0, 5, 10, 10, 10), game, gamePanel));
 
         JLabel titleLabel = new JLabel("Shop");
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -45,6 +53,14 @@ public class ShopWindow extends JDialog {
         add(buttonPanel, BorderLayout.NORTH);
         setVisible(true);
     }
+    /**
+     * Creates a panel for a shop item including costs and buy button.
+     *
+     * @param b building type to display
+     * @param game game instance for checking resources
+     * @param gamePanel for updating counts
+     * @return JPanel representing the shop item
+     */
     public JPanel ItemPanel(BuildingType b, Game game, GamePanel gamePanel) {
         JPanel itemPanel = new JPanel();
         itemPanel.setLayout(new BoxLayout(itemPanel, BoxLayout.Y_AXIS));
@@ -61,19 +77,31 @@ public class ShopWindow extends JDialog {
         JButton buy = new JButton("BUY");
         buy.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(game.canBuy(b)){
+                if (game.canBuy(b)) {
                     game.buy(b);
-                    switch (b.getName()){
+                    switch (b.getName()) {
                         case "House":
-                            gamePanel.getHouse().setRemaining(gamePanel.getHouse().getRemaining() +1);
+                            gamePanel.getHouse().setRemaining(gamePanel.getHouse().getRemaining() + 1);
                             break;
                         case "Factory":
-                            gamePanel.getFactory().setRemaining(gamePanel.getFactory().getRemaining() +1);
+                            gamePanel.getFactory().setRemaining(gamePanel.getFactory().getRemaining() + 1);
+                            break;
+                        case "Farm":
+                            gamePanel.getFarm().setRemaining(gamePanel.getFarm().getRemaining() + 1);
+                            break;
+                        case "WaterPump":
+                            gamePanel.getWaterPump().setRemaining(gamePanel.getWaterPump().getRemaining() + 1);
+                            break;
+                        case "Mine":
+                            gamePanel.getMine().setRemaining(gamePanel.getMine().getRemaining() + 1);
+                            break;
+                        case "LumberMill":
+                            gamePanel.getLumberMill().setRemaining(gamePanel.getLumberMill().getRemaining() + 1);
                             break;
                     }
                     gamePanel.updateValues();
-                }else{
-                     new PopupWindow("not enough resources");
+                } else {
+                    new PopupWindow("not enough resources");
                 }
             }
         });

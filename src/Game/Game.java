@@ -1,9 +1,14 @@
 package Game;
+
 import java.util.ArrayList;
 import java.util.Random;
 
 import Events.*;
-
+/**
+ * The Game class represents the main logic of a city-building game.
+ * It manages a grid of tiles, player resources, buildings, population,
+ * and random events affecting the game state.
+ */
 public class Game {
     private Tile[][] grid;
     private int gridSize = 10;
@@ -18,12 +23,13 @@ public class Game {
     private int wood = 0;
     private boolean started = false;
     private boolean gameOver = false;
-    private ArrayList<RandomEvent> activeEvents = new ArrayList<>() ;
-    private ArrayList<RandomEvent>allEvents = new ArrayList<>() ;
-    private int eventCooldown = 0;
+    private ArrayList<RandomEvent> activeEvents = new ArrayList<>();
+    private ArrayList<RandomEvent> allEvents = new ArrayList<>();
     private Random r = new Random();
 
-
+    /**
+     * Constructs a new Game and initializes a grid with empty tiles.
+     */
     public Game() {
         grid = new Tile[gridSize][gridSize];
         for (int row = 0; row < gridSize; row++) {
@@ -36,7 +42,16 @@ public class Game {
     public Tile[][] getGrid() {
         return grid;
     }
-
+    /**
+     * https://chatgpt.com assisted in this method
+     *
+     * Attempts to place a building at the specified grid coordinates.
+     *
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @param building the building to place
+     * @return true if placed successfully, false otherwise
+     */
     public boolean placeBuilding(int x, int y, Building building) {
         if (x >= 0 && y >= 0 && y < grid.length && x < grid.length) {
             Tile tile = grid[y][x];
@@ -47,13 +62,21 @@ public class Game {
         }
         return false;
     }
+    /**
+     * https://chatgpt.com assisted in this method
+     * Attempts to destroy a building at the specified coordinates.
+     *
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @return true if a building was destroyed, false otherwise
+     */
     public boolean destroyBuilding(int x, int y) {
         if (x >= 0 && y >= 0 && y < grid.length && x < grid.length) {
             Tile tile = grid[y][x];
             if (!tile.isEmpty()) {
                 Building b = grid[y][x].getBuilding();
-                if(b != null) {
-                    population -= b.getType().getPopulationBoost();
+                if (b != null) {
+                    population -= b.getType().getPopulationBoost() / 2;
                 }
                 tile.destroyBuilding();
                 return true;
@@ -61,61 +84,92 @@ public class Game {
         }
         return false;
     }
+    /**
+     * Checks if the player can afford to buy a building based on current resources.
+     *
+     * @param building the building type to check
+     * @return true if the player has enough resources, false otherwise
+     */
     public boolean canBuy(BuildingType building) {
         if (wood >= building.getCostWood() && stone >= building.getCostStone() && money >= building.getCostMoney() && iron >= building.getCostIron()) {
             return true;
-        }else {
-
+        } else {
             return false;
         }
     }
+    /**
+     * Deducts the cost of a building from the player's resources.
+     *
+     * @param building the building being purchased
+     */
     public void buy(BuildingType building) {
-
         wood -= building.getCostWood();
         stone -= building.getCostStone();
         money -= building.getCostMoney();
         iron -= building.getCostIron();
     }
-
+    /**
+     * Generates resources based on current buildings and adjusts population if needed.
+     */
     public void generateResources() {
-        int foodProduced = countBuildingsByName("zatim nic") * 2;
-        int waterProduced = countBuildingsByName("zatim nic") * 2;
-        int woodProduced = countBuildingsByName("zatim nic") * 1;
-        int stoneProduced = countBuildingsByName("zatim nic") * 1;
-        int ironProduced = countBuildingsByName("zatim nic") * 1;
+        int foodProduced = countBuildingsByName("Farm") * 2;
+        int waterProduced = countBuildingsByName("WaterPump") * 2;
+        int woodProduced = countBuildingsByName("LumberMill") * 1;
+        int stoneProduced = countBuildingsByName("Mine") * 1;
+        int ironProduced = countBuildingsByName("Mine") * 1;
         int moneyProduced = countBuildingsByName("Factory") * 2;
 
-        food += moneyProduced;
+
+        food += foodProduced;
         food -= countBuildingsByName("House") * 2;
-        water += moneyProduced;
+        water += waterProduced;
         water -= countBuildingsByName("House") * 2;
         wood += woodProduced;
         stone += stoneProduced;
         iron += ironProduced;
         money += moneyProduced;
 
-        food = Math.min(food, 1000);
-        water = Math.min(water, 1000);
-        wood = Math.min(wood, 1000);
-        stone = Math.min(stone, 1000);
-        iron = Math.min(iron, 1000);
-        money = Math.min(money, 1000);
+        food = limitValues(food, 0, 1000);
+        water = limitValues(water, 0, 1000);
+        wood = limitValues(wood, 0, 1000);
+        stone = limitValues(stone, 0, 1000);
+        iron = limitValues(iron, 0, 1000);
+        money = limitValues(money, 0, 1000);
+        population = limitValues(population, 0, 1000);
 
+        if (food <= 0 || water <= 0) {
+            population --;
+        population = limitValues(population,0,1000);
 
-        food = Math.max(food, 0);
-        water = Math.max(water, 0);
-        population = Math.max(population, 0);
-
-       /* if (food <= 0 || water <= 0) {
-            population = Math.max(0, population - 1);
         }
 
-        */
-        if (started && population == 0){
+        if (started && population == 0) {
             gameOver = true;
         }
     }
-
+    /**
+     * Limits a resource value to within a specified range.
+     *
+     * @param value the current value
+     * @param min the minimum allowed
+     * @param max the maximum allowed
+     * @return the clamped value
+     */
+    private int limitValues(int value, int min, int max) {
+        if (value < min) {
+            return min;
+        }
+        if (value > max) {
+            return max;
+        }
+        return value;
+    }
+    /**
+     * Counts the number of buildings of a specific type on the grid.
+     *
+     * @param name the name of the building
+     * @return the number of such buildings
+     */
     public int countBuildingsByName(String name) {
         int count = 0;
         for (int row = 0; row < grid.length; row++) {
@@ -128,6 +182,10 @@ public class Game {
         }
         return count;
     }
+
+    /**
+     * Randomly triggers a random event if cooldown allows.
+     */
     public void startEvent() {
         allEvents.add(new TreasureEvent());
         allEvents.add(new ZombieApocalypse());
@@ -135,30 +193,33 @@ public class Game {
         allEvents.add(new FamineEvent());
         allEvents.add(new EarthquakeEvent());
 
-        if (eventCooldown > 0){
-            eventCooldown--;
-            return;
-        }
-        if (r.nextInt(100) < 20) {
+        if (r.nextInt(150) < 3) {
 
-                RandomEvent event = allEvents.get(r.nextInt(allEvents.size()));
+            RandomEvent event = allEvents.get(r.nextInt(allEvents.size()));
 
-                if (event.isPermanent()){
-                    activeEvents.add(event);
-                }
+            if (event.isPermanent()) {
+                activeEvents.add(event);
+            }
             event.aply(this);
-                eventCooldown = 5;
 
         }
     }
+    /**
+     * Removes a specified active event and its effects.
+     *
+     * @param event the event to remove
+     */
     public void removeEvent(RandomEvent event) {
         event.remove(this);
         activeEvents.remove(event);
     }
-
+    /**
+     * Returns whether the game is over.
+     */
     public boolean isGameOver() {
         return gameOver;
     }
+
     public ArrayList<RandomEvent> getActiveEvents() {
         return activeEvents;
     }
@@ -184,6 +245,11 @@ public class Game {
     public void setPopulation(int population) {
         this.population = population;
     }
+    /**
+     * Adds population and marks the game as started if population > 0.
+     *
+     * @param amount amount to add
+     */
     public void addPopulation(int amount) {
         population += amount;
         if (population > 0) {

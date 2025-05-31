@@ -8,7 +8,10 @@ import org.junit.jupiter.api.Test;
 import java.awt.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+/**
+ * https://chatgpt.com helped here
+ * Contains unit tests for verifying core game logic, such as population growth, resource checks, and event effects.
+ */
 public class UnitTests {
 
     private Game game;
@@ -19,27 +22,26 @@ public class UnitTests {
     }
 
     @Test
-    public void testAddPopulationIncreasesAndStartsGame() {
+    public void gameAddPopulationTest() {
         game.addPopulation(5);
         assertEquals(5, game.getPopulation());
     }
 
     @Test
-    public void testCanBuyReturnsTrueIfEnoughResources() {
-        BuildingType b = new BuildingType("House", Color.RED, 1, 2, 0, 0, 10, 0);
-        game.setMoney(10);
+    public void enoughMoneyTest() {
+        BuildingType b = new BuildingType("House", Color.RED, 1, 2, 0, 0,0 , 0); game.setMoney(10);
         assertTrue(game.canBuy(b));
     }
 
     @Test
-    public void testCanBuyReturnsFalseIfNotEnoughMoney() {
+    public void notEnoughMoneyTest() {
         BuildingType b = new BuildingType("House", Color.RED, 1, 2, 0, 0, 10, 0);
         game.setMoney(5);
         assertFalse(game.canBuy(b));
     }
 
     @Test
-    public void testBuySubtractsResourcesCorrectly() {
+    public void buyBuldingCorectlyTest() {
         BuildingType b = new BuildingType("House", Color.RED, 1, 2, 0, 0, 10, 0);
         game.setMoney(20);
         game.buy(b);
@@ -47,7 +49,7 @@ public class UnitTests {
     }
 
     @Test
-    public void testEventApplicationAffectsGame() {
+    public void startEventTest() {
         int before = game.getMoney();
         RandomEvent e = new TreasureEvent();
         e.aply(game);

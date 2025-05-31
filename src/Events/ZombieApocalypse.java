@@ -1,7 +1,12 @@
 package Events;
+
 import Game.Game;
 import Game.PopupWindow;
-public class ZombieApocalypse implements RandomEvent{
+/**
+ * Represents a permanent zombie apocalypse that slowly reduces population.
+ * This is a permanent event unless removed.
+ */
+public class ZombieApocalypse implements RandomEvent {
     private boolean applied = false;
 
     @Override
@@ -13,7 +18,11 @@ public class ZombieApocalypse implements RandomEvent{
     public boolean isPermanent() {
         return true;
     }
-
+    /**
+     * Applies the zombie effect, decreasing population.
+     *
+     * @param game the game instance
+     */
     @Override
     public void aply(Game game) {
         if (!applied) {

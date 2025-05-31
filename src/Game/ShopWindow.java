@@ -9,7 +9,7 @@ public class ShopWindow extends JDialog {
         super((Frame) null, "Shop", true);
 
         setUndecorated(true);
-        setSize(400, 400);
+        setSize(500, 400);
         setLocationRelativeTo(null);
         JButton exitButton = new JButton("Exit");
         JPanel buttonPanel = new JPanel();
@@ -18,7 +18,6 @@ public class ShopWindow extends JDialog {
         exitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 gamePanel.setEnabledButtons(true);
-                gamePanel.turnOnOffButtons();
                 dispose();
             }
         });

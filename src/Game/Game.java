@@ -2,10 +2,7 @@ package Game;
 import java.util.ArrayList;
 import java.util.Random;
 
-import Events.RandomEvent;
-import Events.ToxicWaterEvent;
-import Events.TreasureEvent;
-import Events.ZombieApocalypse;
+import Events.*;
 
 public class Game {
     private Tile[][] grid;
@@ -19,8 +16,11 @@ public class Game {
     private int stone = 0;
     private int money = 0;
     private int wood = 0;
+    private boolean started = false;
+    private boolean gameOver = false;
     private ArrayList<RandomEvent> activeEvents = new ArrayList<>() ;
     private ArrayList<RandomEvent>allEvents = new ArrayList<>() ;
+    private int eventCooldown = 0;
     private Random r = new Random();
 
 
@@ -111,6 +111,9 @@ public class Game {
         }
 
         */
+        if (started && population == 0){
+            gameOver = true;
+        }
     }
 
     public int countBuildingsByName(String name) {
@@ -129,18 +132,32 @@ public class Game {
         allEvents.add(new TreasureEvent());
         allEvents.add(new ZombieApocalypse());
         allEvents.add(new ToxicWaterEvent());
+        allEvents.add(new FamineEvent());
+        allEvents.add(new EarthquakeEvent());
 
-        if (r.nextInt(100) < 4) {
-            RandomEvent event = allEvents.get(r.nextInt(allEvents.size()));
-            if (event.isPermanent()){
-                activeEvents.add(event);
-            }
+        if (eventCooldown > 0){
+            eventCooldown--;
+            return;
+        }
+        if (r.nextInt(100) < 20) {
+
+                RandomEvent event = allEvents.get(r.nextInt(allEvents.size()));
+
+                if (event.isPermanent()){
+                    activeEvents.add(event);
+                }
             event.aply(this);
+                eventCooldown = 5;
+
         }
     }
     public void removeEvent(RandomEvent event) {
         event.remove(this);
         activeEvents.remove(event);
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
     }
     public ArrayList<RandomEvent> getActiveEvents() {
         return activeEvents;
@@ -159,6 +176,7 @@ public class Game {
         this.gridSize = gridSize;
     }
 
+
     public int getPopulation() {
         return population;
     }
@@ -166,8 +184,11 @@ public class Game {
     public void setPopulation(int population) {
         this.population = population;
     }
-    public void addPopulation(int population) {
-        this.population += population;
+    public void addPopulation(int amount) {
+        population += amount;
+        if (population > 0) {
+            started = true;
+        }
     }
 
 

@@ -39,8 +39,11 @@ public class BuildingType {
     }
 
     public void decreaseRemaining() {
-        if (remaining > 0) remaining--;
+        if (remaining > 0) {
+            remaining--;
+        }
     }
+
 
     public int getPopulationBoost() {
         return populationBoost;

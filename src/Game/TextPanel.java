@@ -13,8 +13,14 @@ public class TextPanel extends JPanel {
     private JLabel food;
     private JLabel water;
 
+    private JLabel picture;
+    private ImageIcon happy = new ImageIcon("src/images/happy2.png");
+    private ImageIcon sad = new ImageIcon("src/images/happy.png");
+
     public TextPanel(Game game) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBackground(new Color(240, 255, 240));
+
         this.game = game;
         population = new JLabel("Population: " + game.getPopulation());
         money = new JLabel("Money: " + game.getMoney());
@@ -24,7 +30,7 @@ public class TextPanel extends JPanel {
         food = new JLabel("Food: " + game.getFood());
         water = new JLabel("Water: " + game.getWater());
 
-        Font idk = new Font("Arial", Font.BOLD, 30);
+        Font idk = new Font("Arial", Font.BOLD, 25);
         setBorder(new EmptyBorder(5, 30, 5, 30));
         population.setFont(idk);
         money.setFont(idk);
@@ -44,6 +50,14 @@ public class TextPanel extends JPanel {
 
 
 
+        picture = new JLabel();
+        picture.setIcon(happy);
+        picture.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+
+
+
+
         add(population);
         add(money);
         add(wood);
@@ -51,11 +65,10 @@ public class TextPanel extends JPanel {
         add(iron);
         add(food);
         add(water);
+        add(Box.createVerticalStrut(50));
+        add(picture);
 
-
-
-
-
+        updateVal();
     }
     public void updateVal(){
         population.setText("Population: " + game.getPopulation());
@@ -67,13 +80,17 @@ public class TextPanel extends JPanel {
         water.setText("Water: " + game.getWater());
         if (game.getFood() <= 5){
             food.setForeground(Color.RED);
+            picture.setIcon(happy);
         }else {
             food.setForeground(Color.BLACK);
+            picture.setIcon(sad);
         }
         if (game.getWater() <= 5) {
+            picture.setIcon(happy);
             water.setForeground(Color.RED);
         }else {
             water.setForeground(Color.BLACK);
+            picture.setIcon(sad);
         }
     }
 }

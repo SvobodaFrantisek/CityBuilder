@@ -88,7 +88,6 @@ public class GamePanel extends JPanel {
                     break;
                 case "shop":
                     enabledButtons = false;
-                    turnOnOffButtons();
                     new ShopWindow(game, this);
                     break;
                     case "removeEvent":
@@ -133,10 +132,13 @@ public class GamePanel extends JPanel {
             game.generateResources();
             updateValues();
             game.startEvent();
+            repaint();
             for (int i = 0; i < game.getActiveEvents().size() ; i++) {
-                if (i % 2 == 0){
                     game.getActiveEvents().get(i).aply(game);
-                }
+            }
+            if (game.isGameOver()){
+                new PopupWindow("population died. game over");
+               System.exit(0);
             }
         });
         time.start();
@@ -148,16 +150,7 @@ public class GamePanel extends JPanel {
         buttonFactory.setText("Factory (" + factory.getRemaining() + ")");
     }
 
-    public void turnOnOffButtons() {
-        for (int i = 0; i < buttons.size(); i++) {
-            if (!enabledButtons) {
-                buttons.get(i).setEnabled(false);
-            } else {
-                buttons.get(i).setEnabled(true);
-            }
-        }
 
-    }
 
     public boolean isEnabledButtons() {
         return enabledButtons;
@@ -178,16 +171,20 @@ public class GamePanel extends JPanel {
             for (int col = 0; col < cols; col++) {
                 int x = col * tileSize;
                 int y = row * tileSize;
+                Graphics2D g2d = (Graphics2D) g;
 
 
-                g.setColor(Color.black);
-                g.drawRect(x - 1, y - 1, tileSize, tileSize);
+                g2d.setColor(new Color(235, 255, 235));
+                g2d.fillRect(x, y, tileSize, tileSize);
+
+                g2d.setColor(new Color(160, 160, 160));
+                g2d.drawRect(x, y, tileSize, tileSize);
+
 
                 Building b = grid[row][col].getBuilding();
                 if (b != null) {
                     g.setColor(b.getColor());
-                    g.fillRect(x, y, tileSize - 1, tileSize - 1);
-                }
+                    g2d.fillRoundRect(x + tileSize/8, y + tileSize/8, tileSize - 12, tileSize-12, 10, 10);                }
             }
         }
     }
